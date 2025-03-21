@@ -85,4 +85,12 @@ describe('AuthService', () => {
 
     expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
   });
+
+  test('ensure AuthService throws if UserRepository.create throws', async () => {
+    vi.spyOn(mockUserRepository, 'create').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+  });
 });
