@@ -3,6 +3,7 @@ import { UserRepository } from '../../user/repository/user-repository';
 import { BcryptAdapter } from '../../../common/adapters/bcrypt-adapter';
 
 import { AuthService, SignUpParams } from './auth-service';
+import { User } from '@prisma/client';
 
 const mockUserRepository = {
   getByEmail: vi.fn(),
@@ -17,6 +18,13 @@ const mockSignUpParams = (): SignUpParams => ({
   email: 'any_email',
   password: 'any_password',
   confirmPassword: 'any_password',
+  name: 'any_name',
+});
+
+const mockUserModel = (): User => ({
+  id: 1,
+  email: 'any_email',
+  password: 'any_password',
   name: 'any_name',
 });
 
@@ -35,6 +43,13 @@ describe('AuthService', () => {
     await sut.signUp(mockSignUpParams());
 
     expect(getByEmailSpy).toHaveBeenCalledWith(mockSignUpParams().email);
+  });
+  test('ensure AuthService throws if UserRepository.getByEmail returns a user', async () => {
+    vi.spyOn(mockUserRepository, 'getByEmail').mockReturnValueOnce(
+      new Promise(resolve => resolve(mockUserModel()))
+    );
+
+    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
   });
   test('ensure AuthService calls UserRepository create with correct values', async () => {
     const createSpy = vi.spyOn(mockUserRepository, 'create');
