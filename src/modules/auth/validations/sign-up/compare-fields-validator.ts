@@ -1,7 +1,7 @@
 import {
   BadRequestError,
   HttpError,
-} from '../../../../common/errors/http-error';
+} from '../../../../common/errors/http-errors';
 
 export class CompareFieldsValidation {
   constructor(

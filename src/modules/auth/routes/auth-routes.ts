@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { SignUpSchema } from '../validations/sign-up/zod-schemas';
+import { SignUpSchema } from '../validations/sign-up/schemas';
 import { validate } from '../../../common/middlewares/validation-middleware';
 import { makeAuthController } from '../../../common/factories/auth/auth-controller-factory';
 

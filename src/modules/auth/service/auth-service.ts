@@ -1,5 +1,5 @@
 import { BcryptAdapter } from '../../../common/adapters/bcrypt-adapter';
-import { BadRequestError } from '../../../common/errors/http-error';
+import { BadRequestError } from '../../../common/errors/http-errors';
 import { UserRepository } from '../../user/repository/user-repository';
 
 export type SignUpParams = {
