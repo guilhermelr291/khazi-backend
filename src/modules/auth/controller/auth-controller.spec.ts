@@ -67,5 +67,15 @@ describe('AuthController', () => {
 
       expect(signUpSpy).toHaveBeenCalledWith(mockRequest.body);
     });
+
+    test('Should return 200 on success', async () => {
+      await authController.signUp(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+    });
   });
 });
