@@ -19,7 +19,7 @@ export class AuthController {
 
       await this.authService.signUp(data);
 
-      res.status(200).json({ message: 'Usuário criado com sucesso!' });
+      res.status(201).json({ message: 'Usuário criado com sucesso!' });
     } catch (error) {
       console.log('Erro no signup: ', error);
       next(error);

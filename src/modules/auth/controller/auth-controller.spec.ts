@@ -68,14 +68,14 @@ describe('AuthController', () => {
       expect(signUpSpy).toHaveBeenCalledWith(mockRequest.body);
     });
 
-    test('Should return 200 on success', async () => {
+    test('Should return 201 on success', async () => {
       await authController.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
     });
 
     test('Should call next when AuthService throws', async () => {
