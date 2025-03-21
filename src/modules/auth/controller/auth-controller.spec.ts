@@ -44,7 +44,7 @@ describe('AuthController', () => {
   });
 
   describe('signUp', () => {
-    test('signUp method should call CompareFieldsValidation with correct data', async () => {
+    test('Should call CompareFieldsValidation with correct data', async () => {
       const validateSpy = vi.spyOn(mockCompareFieldsValidation, 'validate');
 
       await authController.signUp(
@@ -54,6 +54,18 @@ describe('AuthController', () => {
       );
 
       expect(validateSpy).toHaveBeenCalledWith(mockRequest.body);
+    });
+
+    test('Should call AuthService with correct data', async () => {
+      const signUpSpy = vi.spyOn(mockAuthService, 'signUp');
+
+      await authController.signUp(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(signUpSpy).toHaveBeenCalledWith(mockRequest.body);
     });
   });
 });
