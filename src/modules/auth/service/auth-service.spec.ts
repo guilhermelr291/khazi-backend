@@ -10,7 +10,7 @@ const mockUserRepository = {
 } as unknown as UserRepository;
 
 const mockHasher = {
-  hash: vi.fn(),
+  hash: vi.fn().mockResolvedValue('hashed_password'),
 } as unknown as BcryptAdapter;
 
 const mockSignUpParams = (): SignUpParams => ({
@@ -29,11 +29,22 @@ describe('AuthService', () => {
     sut = new AuthService(mockUserRepository, mockHasher);
   });
 
-  test('ensure AuthService calls UserRepository with correct value', async () => {
+  test('ensure AuthService calls UserRepository getByEmail with correct value', async () => {
     const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
 
     await sut.signUp(mockSignUpParams());
 
     expect(getByEmailSpy).toHaveBeenCalledWith(mockSignUpParams().email);
+  });
+  test('ensure AuthService calls UserRepository create with correct values', async () => {
+    const createSpy = vi.spyOn(mockUserRepository, 'create');
+
+    let signUpParams = mockSignUpParams();
+
+    await sut.signUp(signUpParams);
+
+    signUpParams.password = 'hashed_password';
+
+    expect(createSpy).toHaveBeenCalledWith(signUpParams);
   });
 });
