@@ -93,5 +93,23 @@ describe('AuthController', () => {
 
       expect(mockNext).toHaveBeenCalledWith(error);
     });
+
+    test('Should call next when CompareFieldsValidation throws', async () => {
+      const error = new Error();
+
+      vi.spyOn(mockCompareFieldsValidation, 'validate').mockImplementationOnce(
+        () => {
+          throw error;
+        }
+      );
+
+      await authController.signUp(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockNext).toHaveBeenCalledWith(error);
+    });
   });
 });
