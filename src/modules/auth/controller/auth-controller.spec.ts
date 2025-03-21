@@ -77,5 +77,21 @@ describe('AuthController', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
+
+    test('Should call next when AuthService throws', async () => {
+      const error = new Error();
+
+      vi.spyOn(mockAuthService, 'signUp').mockImplementationOnce(() => {
+        throw error;
+      });
+
+      await authController.signUp(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockNext).toHaveBeenCalledWith(error);
+    });
   });
 });
