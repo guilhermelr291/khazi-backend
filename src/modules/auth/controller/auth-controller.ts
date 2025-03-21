@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../service/auth-service';
-import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validator';
+import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validation';
 
 export class AuthController {
   constructor(

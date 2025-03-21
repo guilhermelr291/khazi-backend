@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthController } from './auth-controller';
 import { AuthService } from '../service/auth-service';
-import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validator';
+import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validation';
 import { NextFunction, Request, Response } from 'express';
 
 const mockAuthService = {
@@ -13,7 +13,7 @@ const mockCompareFieldsValidation = {
 } as unknown as CompareFieldsValidation;
 
 describe('AuthController', () => {
-  let authController: AuthController;
+  let sut: AuthController;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let mockNext: NextFunction;
@@ -21,10 +21,7 @@ describe('AuthController', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    authController = new AuthController(
-      mockAuthService,
-      mockCompareFieldsValidation
-    );
+    sut = new AuthController(mockAuthService, mockCompareFieldsValidation);
 
     mockRequest = {
       body: {
@@ -47,7 +44,7 @@ describe('AuthController', () => {
     test('Should call CompareFieldsValidation with correct data', async () => {
       const validateSpy = vi.spyOn(mockCompareFieldsValidation, 'validate');
 
-      await authController.signUp(
+      await sut.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
@@ -59,7 +56,7 @@ describe('AuthController', () => {
     test('Should call AuthService with correct data', async () => {
       const signUpSpy = vi.spyOn(mockAuthService, 'signUp');
 
-      await authController.signUp(
+      await sut.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
@@ -69,7 +66,7 @@ describe('AuthController', () => {
     });
 
     test('Should return 201 on success', async () => {
-      await authController.signUp(
+      await sut.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
@@ -85,7 +82,7 @@ describe('AuthController', () => {
         throw error;
       });
 
-      await authController.signUp(
+      await sut.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
@@ -103,7 +100,7 @@ describe('AuthController', () => {
         }
       );
 
-      await authController.signUp(
+      await sut.signUp(
         mockRequest as Request,
         mockResponse as Response,
         mockNext
