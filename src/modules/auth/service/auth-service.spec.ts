@@ -62,7 +62,7 @@ describe('AuthService', () => {
 
     expect(createSpy).toHaveBeenCalledWith(signUpParams);
   });
-  test('ensure AuthService calls hasher with correct value', async () => {
+  test('ensure AuthService calls Hasher with correct value', async () => {
     const hashSpy = vi.spyOn(mockHasher, 'hash');
 
     const signUpParams = mockSignUpParams();
@@ -73,6 +73,13 @@ describe('AuthService', () => {
   });
   test('ensure AuthService throws if UserRepository.getByEmail throws', async () => {
     vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+  });
+  test('ensure AuthService throws if Hasher throws', async () => {
+    vi.spyOn(mockHasher, 'hash').mockImplementationOnce(() => {
       throw new Error();
     });
 
