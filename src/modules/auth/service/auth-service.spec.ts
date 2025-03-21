@@ -71,4 +71,11 @@ describe('AuthService', () => {
 
     expect(hashSpy).toHaveBeenCalledWith(signUpParams.password);
   });
+  test('ensure AuthService throws if UserRepository.getByEmail throws', async () => {
+    vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+  });
 });
