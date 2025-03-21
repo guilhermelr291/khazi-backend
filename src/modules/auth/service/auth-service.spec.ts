@@ -37,60 +37,62 @@ describe('AuthService', () => {
     sut = new AuthService(mockUserRepository, mockHasher);
   });
 
-  test('ensure AuthService calls UserRepository.getByEmail with correct value', async () => {
-    const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
+  describe('signUp', () => {
+    test('ensure AuthService calls UserRepository.getByEmail with correct value', async () => {
+      const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
 
-    await sut.signUp(mockSignUpParams());
+      await sut.signUp(mockSignUpParams());
 
-    expect(getByEmailSpy).toHaveBeenCalledWith(mockSignUpParams().email);
-  });
-  test('ensure AuthService throws if UserRepository.getByEmail returns a user', async () => {
-    vi.spyOn(mockUserRepository, 'getByEmail').mockResolvedValueOnce(
-      mockUserModel()
-    );
+      expect(getByEmailSpy).toHaveBeenCalledWith(mockSignUpParams().email);
+    });
+    test('ensure AuthService throws if UserRepository.getByEmail returns a user', async () => {
+      vi.spyOn(mockUserRepository, 'getByEmail').mockResolvedValueOnce(
+        mockUserModel()
+      );
 
-    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
-  });
-  test('ensure AuthService calls UserRepository.create with correct values', async () => {
-    const createSpy = vi.spyOn(mockUserRepository, 'create');
+      expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+    });
+    test('ensure AuthService calls UserRepository.create with correct values', async () => {
+      const createSpy = vi.spyOn(mockUserRepository, 'create');
 
-    let signUpParams = mockSignUpParams();
+      let signUpParams = mockSignUpParams();
 
-    await sut.signUp(signUpParams);
+      await sut.signUp(signUpParams);
 
-    signUpParams.password = 'hashed_password';
+      signUpParams.password = 'hashed_password';
 
-    expect(createSpy).toHaveBeenCalledWith(signUpParams);
-  });
-  test('ensure AuthService calls Hasher with correct value', async () => {
-    const hashSpy = vi.spyOn(mockHasher, 'hash');
+      expect(createSpy).toHaveBeenCalledWith(signUpParams);
+    });
+    test('ensure AuthService calls Hasher with correct value', async () => {
+      const hashSpy = vi.spyOn(mockHasher, 'hash');
 
-    const signUpParams = mockSignUpParams();
+      const signUpParams = mockSignUpParams();
 
-    await sut.signUp(signUpParams);
+      await sut.signUp(signUpParams);
 
-    expect(hashSpy).toHaveBeenCalledWith(signUpParams.password);
-  });
-  test('ensure AuthService throws if UserRepository.getByEmail throws', async () => {
-    vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
-      throw new Error();
+      expect(hashSpy).toHaveBeenCalledWith(signUpParams.password);
+    });
+    test('ensure AuthService throws if UserRepository.getByEmail throws', async () => {
+      vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+    });
+    test('ensure AuthService throws if Hasher throws', async () => {
+      vi.spyOn(mockHasher, 'hash').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
 
-    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
-  });
-  test('ensure AuthService throws if Hasher throws', async () => {
-    vi.spyOn(mockHasher, 'hash').mockImplementationOnce(() => {
-      throw new Error();
+    test('ensure AuthService throws if UserRepository.create throws', async () => {
+      vi.spyOn(mockUserRepository, 'create').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-
-    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
-  });
-
-  test('ensure AuthService throws if UserRepository.create throws', async () => {
-    vi.spyOn(mockUserRepository, 'create').mockImplementationOnce(() => {
-      throw new Error();
-    });
-
-    expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
   });
 });
