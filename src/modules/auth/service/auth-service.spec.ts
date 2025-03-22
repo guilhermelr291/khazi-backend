@@ -1,24 +1,21 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { UserRepository } from '../../user/repository/user-repository';
-import { BcryptAdapter } from '../../../common/adapters/bcrypt-adapter';
+import { BcryptAdapter } from '../../../common/adapters/cryptography/bcrypt-adapter';
 
-import { AuthService, SignUpParams } from './auth-service';
+import { AuthService, LoginParams, SignUpParams } from './auth-service';
 import { User } from '@prisma/client';
-
-const mockUserRepository = {
-  getByEmail: vi.fn(),
-  create: vi.fn(),
-} as unknown as UserRepository;
-
-const mockHasher = {
-  hash: vi.fn().mockResolvedValue('hashed_password'),
-} as unknown as BcryptAdapter;
+import { JwtAdapter } from '../../../common/adapters/cryptography/jwt-adapter';
+import { UnauthorizedError } from '../../../common/errors/http-errors';
 
 const mockSignUpParams = (): SignUpParams => ({
-  email: 'any_email',
+  email: 'any_email@mail.com',
   password: 'any_password',
   confirmPassword: 'any_password',
   name: 'any_name',
+});
+const mockLoginParams = (): LoginParams => ({
+  email: 'any_email@mail.com',
+  password: 'any_password',
 });
 
 const mockUserModel = (): User => ({
@@ -28,13 +25,30 @@ const mockUserModel = (): User => ({
   name: 'any_name',
 });
 
+const mockUserRepository = {
+  getByEmail: vi.fn(),
+  create: vi.fn(),
+} as unknown as UserRepository;
+
+const mockBcryptAdapter = {
+  hash: vi.fn().mockResolvedValue('hashed_password'),
+  compare: vi.fn().mockResolvedValue(true),
+} as unknown as BcryptAdapter;
+
+const mockJwtAdapter = {
+  encode: vi.fn().mockResolvedValue('encoded_value'),
+} as unknown as JwtAdapter;
 describe('AuthService', () => {
   let sut: AuthService;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    sut = new AuthService(mockUserRepository, mockHasher);
+    sut = new AuthService(
+      mockUserRepository,
+      mockBcryptAdapter,
+      mockJwtAdapter
+    );
   });
 
   describe('signUp', () => {
@@ -63,8 +77,8 @@ describe('AuthService', () => {
 
       expect(createSpy).toHaveBeenCalledWith(signUpParams);
     });
-    test('should call Hasher with correct value', async () => {
-      const hashSpy = vi.spyOn(mockHasher, 'hash');
+    test('should call BcryptAdapter with correct value', async () => {
+      const hashSpy = vi.spyOn(mockBcryptAdapter, 'hash');
 
       const signUpParams = mockSignUpParams();
 
@@ -79,8 +93,8 @@ describe('AuthService', () => {
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-    test('should throw if Hasher throws', async () => {
-      vi.spyOn(mockHasher, 'hash').mockImplementationOnce(() => {
+    test('should throw if BcryptAdapter throws', async () => {
+      vi.spyOn(mockBcryptAdapter, 'hash').mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -93,6 +107,22 @@ describe('AuthService', () => {
       });
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
+    });
+  });
+
+  describe('login', () => {
+    beforeEach(() => {
+      vi.spyOn(mockUserRepository, 'getByEmail').mockResolvedValueOnce(
+        mockUserModel()
+      );
+    });
+
+    test('should call UserRepository.getByEmail with correct value', async () => {
+      const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
+
+      await sut.login(mockLoginParams());
+
+      expect(getByEmailSpy).toHaveBeenCalledWith(mockLoginParams().email);
     });
   });
 });
