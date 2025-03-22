@@ -22,5 +22,13 @@ describe('BcryptAdapter', () => {
 
       expect(bcrypt.hash).toHaveBeenCalledWith('password', 'any_salt');
     });
+
+    test('Should throw if bcrypt throws', () => {
+      vi.mocked(bcrypt.hash).mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.hash('password')).rejects.toThrow();
+    });
   });
 });
