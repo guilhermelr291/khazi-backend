@@ -32,5 +32,12 @@ describe('UserRepository', () => {
 
       expect(result).toStrictEqual(mockUser);
     });
+
+    test('should return null if user does not exist', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
+      const result = await sut.getByEmail('any_email');
+
+      expect(result).toBeNull();
+    });
   });
 });

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "docker-compose up -d && ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "vitest run",
-    "test:unit": "vitest",
+    "test": "vitest run --silent",
+    "test:unit": "vitest --silent",
+    "test:verbose": "vitest",
     "prepare": "husky"
   },
   "keywords": [],
