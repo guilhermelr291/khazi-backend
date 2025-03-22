@@ -7,7 +7,7 @@ import { BcryptAdapter } from '../../adapters/bcrypt-adapter';
 export const makeAuthController = (): AuthController => {
   const userRepository = new UserRepository();
 
-  const hasher = new BcryptAdapter();
+  const hasher = new BcryptAdapter(12);
 
   const authService = new AuthService(userRepository, hasher);
 
