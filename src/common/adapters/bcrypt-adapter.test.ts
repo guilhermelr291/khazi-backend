@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { BcryptAdapter } from './bcrypt-adapter';
 vi.mock('bcrypt', () => ({
   default: {
-    hash: vi.fn().mockResolvedValue('hashed_password'),
+    hash: vi.fn().mockResolvedValue('hashed_value'),
     genSalt: vi.fn().mockResolvedValue('any_salt'),
   },
 }));
@@ -18,9 +18,9 @@ describe('BcryptAdapter', () => {
 
   describe('hash', () => {
     test('Should call bcrypt hash method with correct value', async () => {
-      await sut.hash('password');
+      await sut.hash('any_value');
 
-      expect(bcrypt.hash).toHaveBeenCalledWith('password', 'any_salt');
+      expect(bcrypt.hash).toHaveBeenCalledWith('any_value', 'any_salt');
     });
 
     test('Should throw if bcrypt throws', () => {
@@ -28,7 +28,12 @@ describe('BcryptAdapter', () => {
         throw new Error();
       });
 
-      expect(sut.hash('password')).rejects.toThrow();
+      expect(sut.hash('any_value')).rejects.toThrow();
+    });
+    test('Should return hashed value', async () => {
+      const result = await sut.hash('any_value');
+
+      expect(result).toBe('hashed_value');
     });
   });
 });
