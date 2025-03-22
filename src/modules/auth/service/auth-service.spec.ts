@@ -38,7 +38,7 @@ describe('AuthService', () => {
   });
 
   describe('signUp', () => {
-    test('ensure AuthService calls UserRepository.getByEmail with correct value', async () => {
+    test('should call UserRepository.getByEmail with correct value', async () => {
       const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
 
       await sut.signUp(mockSignUpParams());
@@ -52,7 +52,7 @@ describe('AuthService', () => {
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-    test('ensure AuthService calls UserRepository.create with correct values', async () => {
+    test('should call UserRepository.create with correct values', async () => {
       const createSpy = vi.spyOn(mockUserRepository, 'create');
 
       let signUpParams = mockSignUpParams();
@@ -63,7 +63,7 @@ describe('AuthService', () => {
 
       expect(createSpy).toHaveBeenCalledWith(signUpParams);
     });
-    test('ensure AuthService calls Hasher with correct value', async () => {
+    test('should call Hasher with correct value', async () => {
       const hashSpy = vi.spyOn(mockHasher, 'hash');
 
       const signUpParams = mockSignUpParams();
@@ -72,14 +72,14 @@ describe('AuthService', () => {
 
       expect(hashSpy).toHaveBeenCalledWith(signUpParams.password);
     });
-    test('ensure AuthService throws if UserRepository.getByEmail throws', async () => {
+    test('should throw if UserRepository.getByEmail throws', async () => {
       vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
         throw new Error();
       });
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-    test('ensure AuthService throws if Hasher throws', async () => {
+    test('should throw if Hasher throws', async () => {
       vi.spyOn(mockHasher, 'hash').mockImplementationOnce(() => {
         throw new Error();
       });
@@ -87,7 +87,7 @@ describe('AuthService', () => {
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
 
-    test('ensure AuthService throws if UserRepository.create throws', async () => {
+    test('should throw if UserRepository.create throws', async () => {
       vi.spyOn(mockUserRepository, 'create').mockImplementationOnce(() => {
         throw new Error();
       });
