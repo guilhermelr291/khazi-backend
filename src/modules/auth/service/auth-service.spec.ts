@@ -131,6 +131,21 @@ describe('AuthService', () => {
       expect(sut.login(mockLoginParams())).rejects.toThrow(UnauthorizedError);
     });
 
+    test('should call BcryptAdapter.compare with correct values', async () => {
+      const compareSpy = vi.spyOn(mockBcryptAdapter, 'compare');
+
+      const loginParams = mockLoginParams();
+
+      const userModel = mockUserModel();
+
+      await sut.login(loginParams);
+
+      expect(compareSpy).toHaveBeenCalledWith(
+        loginParams.password,
+        userModel.password
+      );
+    });
+
     test('should call jwtAdapter.encode with correct value', async () => {
       const encodeSpy = vi.spyOn(mockJwtAdapter, 'encode');
 
