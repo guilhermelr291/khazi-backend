@@ -124,5 +124,11 @@ describe('AuthService', () => {
 
       expect(getByEmailSpy).toHaveBeenCalledWith(mockLoginParams().email);
     });
+
+    test('should throw UnauthorizedError if userRepository.getByEmail returns null', async () => {
+      vi.spyOn(mockUserRepository, 'getByEmail').mockResolvedValueOnce(null);
+
+      expect(sut.login(mockLoginParams())).rejects.toThrow(UnauthorizedError);
+    });
   });
 });
