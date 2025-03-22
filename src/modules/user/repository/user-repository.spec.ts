@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { UserRepository } from './user-repository';
 import prisma from '../../../prisma/db';
+import { SignUpParams } from '../../auth/service/auth-service';
 
 vi.mock('../../../prisma/db', () => ({
   default: {
@@ -18,7 +19,15 @@ describe('UserRepository', () => {
   });
 
   describe('getByEmail', () => {
-    test('should return user if it is found', async () => {
+    test('Should call prisma findUnique with correct value', async () => {
+      await sut.getByEmail('any_email');
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'any_email' },
+      });
+    });
+
+    test('Should return user if it is found', async () => {
       const mockUser = {
         id: 1,
         email: 'any_email',
@@ -33,7 +42,7 @@ describe('UserRepository', () => {
       expect(result).toStrictEqual(mockUser);
     });
 
-    test('should return null if user does not exist', async () => {
+    test('Should return null if user does not exist', async () => {
       vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
       const result = await sut.getByEmail('any_email');
 
