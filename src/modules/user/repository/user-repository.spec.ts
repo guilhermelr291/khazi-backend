@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-
 import { UserRepository } from './user-repository';
 import prisma from '../../../prisma/db';
 import { SignUpParams } from '../../auth/service/auth-service';
@@ -47,6 +46,27 @@ describe('UserRepository', () => {
       const result = await sut.getByEmail('any_email');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('create', () => {
+    test('Should call prisma created method with correct data', async () => {
+      const mockSighUpParams: SignUpParams = {
+        email: 'any_email',
+        name: 'any_name',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+      };
+
+      await sut.create(mockSighUpParams);
+
+      expect(prisma.user.create).toHaveBeenCalledWith({
+        data: {
+          email: 'any_email',
+          name: 'any_name',
+          password: 'any_password',
+        },
+      });
     });
   });
 });
