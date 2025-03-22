@@ -2,12 +2,27 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { UserRepository } from './user-repository';
 import prisma from '../../../prisma/db';
 import { SignUpParams } from '../../auth/service/auth-service';
+import { User } from '@prisma/client';
 
 vi.mock('../../../prisma/db', () => ({
   default: {
     user: { findUnique: vi.fn(), create: vi.fn() },
   },
 }));
+
+const mockUser = (): User => ({
+  id: 1,
+  email: 'any_email',
+  name: 'any_name',
+  password: 'any_password',
+});
+
+const mockSighUpParams = (): SignUpParams => ({
+  email: 'any_email',
+  name: 'any_name',
+  password: 'any_password',
+  confirmPassword: 'any_password',
+});
 
 describe('UserRepository', () => {
   let sut: UserRepository;
@@ -27,18 +42,11 @@ describe('UserRepository', () => {
     });
 
     test('Should return user if it is found', async () => {
-      const mockUser = {
-        id: 1,
-        email: 'any_email',
-        name: 'any_name',
-        password: 'any_password',
-      };
-
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
+      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser());
 
       const result = await sut.getByEmail('any_email');
 
-      expect(result).toStrictEqual(mockUser);
+      expect(result).toStrictEqual(mockUser());
     });
 
     test('Should return null if user does not exist', async () => {
@@ -58,14 +66,7 @@ describe('UserRepository', () => {
 
   describe('create', () => {
     test('Should call prisma created method with correct data', async () => {
-      const mockSighUpParams: SignUpParams = {
-        email: 'any_email',
-        name: 'any_name',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-      };
-
-      await sut.create(mockSighUpParams);
+      await sut.create(mockSighUpParams());
 
       expect(prisma.user.create).toHaveBeenCalledWith({
         data: {
@@ -74,6 +75,14 @@ describe('UserRepository', () => {
           password: 'any_password',
         },
       });
+    });
+
+    test('Should return user returned by prisma created method', async () => {
+      vi.mocked(prisma.user.create).mockResolvedValueOnce(mockUser());
+
+      const result = await sut.create(mockSighUpParams());
+
+      expect(result).toStrictEqual(mockUser());
     });
   });
 });
