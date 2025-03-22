@@ -9,4 +9,8 @@ export class BcryptAdapter {
     const hashedValue = await bcrypt.hash(value, salt);
     return hashedValue;
   }
+
+  async compare(value: string, valueToCompare: string) {
+    return await bcrypt.compare(value, valueToCompare);
+  }
 }
