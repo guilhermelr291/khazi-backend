@@ -84,5 +84,13 @@ describe('UserRepository', () => {
 
       expect(result).toStrictEqual(mockUser());
     });
+
+    test('Should throw if prisma throws', async () => {
+      vi.mocked(prisma.user.create).mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.create(mockSighUpParams())).rejects.toThrow();
+    });
   });
 });
