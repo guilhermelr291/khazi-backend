@@ -6,6 +6,10 @@ import { NextFunction, Request, Response } from 'express';
 
 const mockAuthService = {
   signUp: vi.fn(),
+  login: vi.fn().mockResolvedValue({
+    token: 'any_token',
+    user: { id: 1, name: 'any_name', email: 'any_email' },
+  }),
 } as unknown as AuthService;
 
 const mockCompareFieldsValidation = {
@@ -107,6 +111,29 @@ describe('AuthController', () => {
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('login', () => {
+    beforeEach(() => {
+      mockRequest = {
+        body: {
+          email: 'any_email@mail.com',
+          password: 'any_password',
+        },
+      };
+    });
+
+    test('Should call AuthService.login with correct values', async () => {
+      const loginSpy = vi.spyOn(mockAuthService, 'login');
+
+      await sut.login(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(loginSpy).toHaveBeenCalledWith(mockRequest.body);
     });
   });
 });
