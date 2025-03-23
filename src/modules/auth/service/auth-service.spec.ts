@@ -172,5 +172,13 @@ describe('AuthService', () => {
         },
       });
     });
+
+    test('Should throw if bcryptAdapter throws', async () => {
+      vi.spyOn(mockBcryptAdapter, 'compare').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.login(mockLoginParams())).rejects.toThrow();
+    });
   });
 });
