@@ -159,5 +159,18 @@ describe('AuthService', () => {
 
       expect(encodeSpy).toHaveBeenCalledWith({ id: mockUserModel().id });
     });
+
+    test('Should return token and user on success', async () => {
+      const result = await sut.login(mockLoginParams());
+
+      expect(result).toStrictEqual({
+        token: 'encoded_value',
+        user: {
+          id: 1,
+          email: 'any_email',
+          name: 'any_name',
+        },
+      });
+    });
   });
 });
