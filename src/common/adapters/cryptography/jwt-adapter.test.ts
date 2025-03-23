@@ -31,5 +31,12 @@ describe('JwtAdapter', () => {
 
       expect(result).toBe('encoded_value');
     });
+    test('Should throw if jwt throws', () => {
+      vi.mocked(jwt.sign).mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(() => sut.encode({ field: 'any_value' })).toThrow();
+    });
   });
 });
