@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../service/auth-service';
 import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validation';
+import { User } from '@prisma/client';
 
 export class AuthController {
   constructor(
@@ -26,11 +27,15 @@ export class AuthController {
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  async login(
+    req: Request,
+    res: Response<{ token: string; user: User }>,
+    next: NextFunction
+  ) {
     try {
-      const data = await this.authService.login(req.body);
+      const userAndToken = await this.authService.login(req.body);
 
-      res.status(200).json(data);
+      res.status(200).json(userAndToken);
     } catch (error) {
       console.log('Erro no login: ', error);
       next(error);
