@@ -6,7 +6,7 @@ export class JwtAdapter {
     this.SECRET = process.env.JWT_SECRET!;
   }
 
-  async encode(data: {}): Promise<string> {
+  encode(data: {}): string {
     return jwt.sign(data, this.SECRET);
   }
 }
