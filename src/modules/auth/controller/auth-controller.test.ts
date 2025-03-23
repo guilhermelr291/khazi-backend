@@ -150,5 +150,19 @@ describe('AuthController', () => {
 
       expect(mockNext).toHaveBeenCalledWith(error);
     });
+
+    test('Should return status 200 and correct userData on success', async () => {
+      await sut.login(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        token: 'any_token',
+        user: { id: 1, name: 'any_name', email: 'any_email' },
+      });
+    });
   });
 });

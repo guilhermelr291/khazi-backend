@@ -8,6 +8,7 @@
     "test": "vitest run --silent",
     "test:unit": "vitest --silent",
     "test:verbose": "vitest",
+    "test:ci": "vitest run --silent --coverage",
     "prepare": "husky"
   },
   "keywords": [],
@@ -25,7 +26,8 @@
   "devDependencies": {
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.13.11",
+    "@vitest/coverage-v8": "3.0.9",
     "husky": "^9.1.7",
     "prisma": "^6.5.0",
     "ts-node-dev": "^2.0.0",
