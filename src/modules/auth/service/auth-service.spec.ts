@@ -151,5 +151,13 @@ describe('AuthService', () => {
 
       expect(sut.login(mockLoginParams())).rejects.toThrow(UnauthorizedError);
     });
+
+    test('Should call jwtAdapter.encode with correct value', async () => {
+      const encodeSpy = vi.spyOn(mockJwtAdapter, 'encode');
+
+      await sut.login(mockLoginParams());
+
+      expect(encodeSpy).toHaveBeenCalledWith({ id: mockUserModel().id });
+    });
   });
 });
