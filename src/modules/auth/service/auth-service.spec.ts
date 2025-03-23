@@ -180,5 +180,12 @@ describe('AuthService', () => {
 
       expect(sut.login(mockLoginParams())).rejects.toThrow();
     });
+    test('Should throw if UserRepository throws', async () => {
+      vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.login(mockLoginParams())).rejects.toThrow();
+    });
   });
 });
