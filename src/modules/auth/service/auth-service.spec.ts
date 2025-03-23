@@ -52,7 +52,7 @@ describe('AuthService', () => {
   });
 
   describe('signUp', () => {
-    test('should call UserRepository.getByEmail with correct value', async () => {
+    test('Should call UserRepository.getByEmail with correct value', async () => {
       const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
 
       await sut.signUp(mockSignUpParams());
@@ -66,7 +66,7 @@ describe('AuthService', () => {
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-    test('should call UserRepository.create with correct values', async () => {
+    test('Should call UserRepository.create with correct values', async () => {
       const createSpy = vi.spyOn(mockUserRepository, 'create');
 
       let signUpParams = mockSignUpParams();
@@ -77,7 +77,7 @@ describe('AuthService', () => {
 
       expect(createSpy).toHaveBeenCalledWith(signUpParams);
     });
-    test('should call BcryptAdapter with correct value', async () => {
+    test('Should call BcryptAdapter with correct value', async () => {
       const hashSpy = vi.spyOn(mockBcryptAdapter, 'hash');
 
       const signUpParams = mockSignUpParams();
@@ -86,14 +86,14 @@ describe('AuthService', () => {
 
       expect(hashSpy).toHaveBeenCalledWith(signUpParams.password);
     });
-    test('should throw if UserRepository.getByEmail throws', async () => {
+    test('Should throw if UserRepository.getByEmail throws', async () => {
       vi.spyOn(mockUserRepository, 'getByEmail').mockImplementationOnce(() => {
         throw new Error();
       });
 
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
-    test('should throw if BcryptAdapter throws', async () => {
+    test('Should throw if BcryptAdapter throws', async () => {
       vi.spyOn(mockBcryptAdapter, 'hash').mockImplementationOnce(() => {
         throw new Error();
       });
@@ -101,7 +101,7 @@ describe('AuthService', () => {
       expect(sut.signUp(mockSignUpParams())).rejects.toThrow();
     });
 
-    test('should throw if UserRepository.create throws', async () => {
+    test('Should throw if UserRepository.create throws', async () => {
       vi.spyOn(mockUserRepository, 'create').mockImplementationOnce(() => {
         throw new Error();
       });
@@ -117,7 +117,7 @@ describe('AuthService', () => {
       );
     });
 
-    test('should call UserRepository.getByEmail with correct value', async () => {
+    test('Should call UserRepository.getByEmail with correct value', async () => {
       const getByEmailSpy = vi.spyOn(mockUserRepository, 'getByEmail');
 
       await sut.login(mockLoginParams());
@@ -125,13 +125,13 @@ describe('AuthService', () => {
       expect(getByEmailSpy).toHaveBeenCalledWith(mockLoginParams().email);
     });
 
-    test('should throw UnauthorizedError if userRepository.getByEmail returns null', async () => {
+    test('Should throw UnauthorizedError if userRepository.getByEmail returns null', async () => {
       vi.spyOn(mockUserRepository, 'getByEmail').mockResolvedValueOnce(null);
 
       expect(sut.login(mockLoginParams())).rejects.toThrow(UnauthorizedError);
     });
 
-    test('should call BcryptAdapter.compare with correct values', async () => {
+    test('Should call BcryptAdapter.compare with correct values', async () => {
       const compareSpy = vi.spyOn(mockBcryptAdapter, 'compare');
 
       const loginParams = mockLoginParams();
@@ -146,12 +146,10 @@ describe('AuthService', () => {
       );
     });
 
-    test('should call jwtAdapter.encode with correct value', async () => {
-      const encodeSpy = vi.spyOn(mockJwtAdapter, 'encode');
+    test('Should throw UnauthorizedError if BcryptAdapter.compare returns false', async () => {
+      vi.spyOn(mockBcryptAdapter, 'compare').mockResolvedValueOnce(false);
 
-      await sut.login(mockLoginParams());
-
-      expect(encodeSpy).toHaveBeenCalledWith({ id: mockUserModel().id });
+      expect(sut.login(mockLoginParams())).rejects.toThrow(UnauthorizedError);
     });
   });
 });
