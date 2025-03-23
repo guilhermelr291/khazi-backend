@@ -135,5 +135,20 @@ describe('AuthController', () => {
 
       expect(loginSpy).toHaveBeenCalledWith(mockRequest.body);
     });
+    test('Should call next if AuthService.login throws', async () => {
+      const error = new Error();
+
+      vi.spyOn(mockAuthService, 'login').mockImplementationOnce(() => {
+        throw error;
+      });
+
+      await sut.login(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockNext).toHaveBeenCalledWith(error);
+    });
   });
 });
