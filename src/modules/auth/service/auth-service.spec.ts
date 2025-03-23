@@ -187,5 +187,12 @@ describe('AuthService', () => {
 
       expect(sut.login(mockLoginParams())).rejects.toThrow();
     });
+    test('Should throw if JwtAdapter throws', async () => {
+      vi.spyOn(mockJwtAdapter, 'encode').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      expect(sut.login(mockLoginParams())).rejects.toThrow();
+    });
   });
 });
