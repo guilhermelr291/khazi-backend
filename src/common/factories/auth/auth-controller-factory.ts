@@ -1,6 +1,6 @@
 import { AuthController } from '../../../modules/auth/controller/auth-controller';
 import { AuthService } from '../../../modules/auth/service/auth-service';
-import { CompareFieldsValidation } from '../../../modules/auth/validations/sign-up/compare-fields-validation';
+import { FieldsComparer } from '../../validations/field-comparer';
 import { UserRepository } from '../../../modules/user/repository/user-repository';
 import { BcryptAdapter } from '../../adapters/cryptography/bcrypt-adapter';
 import { JwtAdapter } from '../../adapters/cryptography/jwt-adapter';
@@ -19,7 +19,7 @@ export const makeAuthController = (): AuthController => {
     jwtAdapter
   );
 
-  const compareFieldsValidation = new CompareFieldsValidation(
+  const compareFieldsValidation = new FieldsComparer(
     'password',
     'confirmPassword'
   );

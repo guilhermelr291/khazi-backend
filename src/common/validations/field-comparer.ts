@@ -1,9 +1,7 @@
-import {
-  BadRequestError,
-  HttpError,
-} from '../../../../common/errors/http-errors';
+import { BadRequestError, HttpError } from '../errors/http-errors';
+import { FieldComparer } from '../../modules/auth/protocols/fields-comparer';
 
-export class CompareFieldsValidation {
+export class FieldComparerValidation implements FieldComparer {
   constructor(
     private readonly field: string,
     private readonly fieldToCompare: string
@@ -11,7 +9,7 @@ export class CompareFieldsValidation {
     this.field = field;
     this.fieldToCompare = fieldToCompare;
   }
-  validate(data: any): HttpError | void {
+  compare(data: any): HttpError | void {
     if (data[this.field] !== data[this.fieldToCompare])
       throw new BadRequestError(
         `Field ${this.fieldToCompare} does not match ${this.field}`

@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../service/auth-service';
-import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validation';
+import { FieldComparer } from '../protocols/fields-comparer';
 import { User } from '@prisma/client';
 
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly compareFieldsValidation: CompareFieldsValidation
+    private readonly fieldComparer: FieldComparer
   ) {
     this.authService = authService;
-    this.compareFieldsValidation = compareFieldsValidation;
+    this.fieldComparer = fieldComparer;
   }
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
 
-      this.compareFieldsValidation.validate(data);
+      this.fieldComparer.compare(data);
 
       await this.authService.signUp(data);
 
