@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthController } from './auth-controller';
 import { AuthService } from '../service/auth-service';
-import { CompareFieldsValidation } from '../validations/sign-up/compare-fields-validation';
 import { NextFunction, Request, Response } from 'express';
+import { FieldComparer } from '../protocols/fields-comparer';
+import { HttpError } from '../../../common/errors/http-errors';
 
 const mockAuthService = {
   signUp: vi.fn(),
@@ -12,20 +13,21 @@ const mockAuthService = {
   }),
 } as unknown as AuthService;
 
-const mockCompareFieldsValidation = {
-  validate: vi.fn(),
-} as unknown as CompareFieldsValidation;
+class FieldComparerStub implements FieldComparer {
+  compare(data: any): HttpError | void {}
+}
 
 describe('AuthController', () => {
   let sut: AuthController;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let mockNext: NextFunction;
+  let fieldComparerStub = new FieldComparerStub();
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    sut = new AuthController(mockAuthService, mockCompareFieldsValidation);
+    sut = new AuthController(mockAuthService, fieldComparerStub);
 
     mockRequest = {
       body: {
@@ -45,8 +47,8 @@ describe('AuthController', () => {
   });
 
   describe('signUp', () => {
-    test('Should call CompareFieldsValidation with correct data', async () => {
-      const validateSpy = vi.spyOn(mockCompareFieldsValidation, 'validate');
+    test('Should call FieldComparer with correct data', async () => {
+      const validateSpy = vi.spyOn(fieldComparerStub, 'compare');
 
       await sut.signUp(
         mockRequest as Request,
@@ -95,14 +97,12 @@ describe('AuthController', () => {
       expect(mockNext).toHaveBeenCalledWith(error);
     });
 
-    test('Should call next when CompareFieldsValidation throws', async () => {
+    test('Should call next when FieldComparer throws', async () => {
       const error = new Error();
 
-      vi.spyOn(mockCompareFieldsValidation, 'validate').mockImplementationOnce(
-        () => {
-          throw error;
-        }
-      );
+      vi.spyOn(fieldComparerStub, 'compare').mockImplementationOnce(() => {
+        throw error;
+      });
 
       await sut.signUp(
         mockRequest as Request,
