@@ -19,7 +19,7 @@ describe('JwtAdapter', () => {
 
   describe('encode', async () => {
     test('Should call jwt.sign with correct values', () => {
-      sut.encode({ field: 'any_value' });
+      sut.encrypt({ field: 'any_value' });
 
       expect(jwt.sign).toHaveBeenCalledWith(
         { field: 'any_value' },
@@ -27,7 +27,7 @@ describe('JwtAdapter', () => {
       );
     });
     test('Should return encoded value on success', () => {
-      const result = sut.encode({ field: 'any_value' });
+      const result = sut.encrypt({ field: 'any_value' });
 
       expect(result).toBe('encoded_value');
     });
@@ -36,7 +36,7 @@ describe('JwtAdapter', () => {
         throw new Error();
       });
 
-      expect(() => sut.encode({ field: 'any_value' })).toThrow();
+      expect(() => sut.encrypt({ field: 'any_value' })).toThrow();
     });
   });
 });
