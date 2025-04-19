@@ -1,11 +1,14 @@
 import { User } from '@prisma/client';
-import { BcryptAdapter } from '../../../common/adapters/cryptography/bcrypt-adapter';
+
 import {
   BadRequestError,
   UnauthorizedError,
 } from '../../../common/errors/http-errors';
 import { UserRepository } from '../../user/repository/user-repository';
-import { JwtAdapter } from '../../../common/adapters/cryptography/jwt-adapter';
+
+import { Hasher } from '../protocols/hasher';
+import { HashComparer } from '../protocols/hash-comparer';
+import { Encrypter } from '../protocols/encrypter';
 
 export type SignUpParams = {
   email: string;
@@ -22,11 +25,14 @@ export type LoginParams = {
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly bcryptAdapter: BcryptAdapter,
-    private readonly jwtAdapter: JwtAdapter
+    private readonly hasher: Hasher,
+    private readonly hashComparer: HashComparer,
+    private readonly encrypter: Encrypter
   ) {
     this.userRepository = userRepository;
-    this.bcryptAdapter = bcryptAdapter;
+    this.hasher = hasher;
+    this.hashComparer = hashComparer;
+    this.encrypter = encrypter;
   }
 
   async signUp(data: SignUpParams): Promise<User> {
@@ -34,7 +40,7 @@ export class AuthService {
     const user = await this.userRepository.getByEmail(email);
     if (user) throw new BadRequestError('Email is already in use');
 
-    const hashedPassword = await this.bcryptAdapter.hash(password);
+    const hashedPassword = await this.hasher.hash(password);
 
     const createdUser = await this.userRepository.create({
       ...data,
@@ -49,14 +55,14 @@ export class AuthService {
     const user = await this.userRepository.getByEmail(email);
     if (!user) throw new UnauthorizedError();
 
-    const passwordMatches = await this.bcryptAdapter.compare(
+    const passwordMatches = await this.hashComparer.compare(
       password,
       user.password
     );
 
     if (!passwordMatches) throw new UnauthorizedError();
 
-    const token = await this.jwtAdapter.encode({ id: user.id });
+    const token = await this.encrypter.encrypt({ id: user.id });
 
     const { password: pass, ...userToReturn } = user;
 

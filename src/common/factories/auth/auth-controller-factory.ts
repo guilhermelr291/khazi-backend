@@ -15,6 +15,7 @@ export const makeAuthController = (): AuthController => {
   const authService = new AuthService(
     userRepository,
     bcryptAdapter,
+    bcryptAdapter,
     jwtAdapter
   );
 

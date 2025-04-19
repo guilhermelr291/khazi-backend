@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
+import { Encrypter } from '../../../modules/auth/protocols/encrypter';
 
-export class JwtAdapter {
+export class JwtAdapter implements Encrypter {
   private readonly SECRET: string;
   constructor() {
     this.SECRET = process.env.JWT_SECRET!;
   }
 
-  encode(data: {}): string {
+  encrypt(data: {}): string {
     return jwt.sign(data, this.SECRET);
   }
 }

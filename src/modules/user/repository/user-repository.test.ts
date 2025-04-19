@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { UserRepository } from './user-repository';
-import prisma from '../../../prisma/db';
+import prisma from '../../../../prisma/db';
 import { SignUpParams } from '../../auth/service/auth-service';
 import { User } from '@prisma/client';
 
-vi.mock('../../../prisma/db', () => ({
+vi.mock('../../../../prisma/db', () => ({
   default: {
     user: { findUnique: vi.fn(), create: vi.fn() },
   },

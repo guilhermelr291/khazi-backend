@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import prisma from '../../../prisma/db';
+import prisma from '../../../../prisma/db';
 import { SignUpParams } from '../../auth/service/auth-service';
 
 export class UserRepository {
