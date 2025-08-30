@@ -3,7 +3,7 @@ import { AuthController } from './auth-controller';
 import { AuthService } from '../service/auth-service';
 import { NextFunction, Request, Response } from 'express';
 import { FieldComparer } from '../protocols/fields-comparer';
-import { HttpError } from '../../../common/errors/http-errors';
+import { HttpError } from '../../../common/factories/errors/http-errors';
 
 const mockAuthService = {
   signUp: vi.fn(),

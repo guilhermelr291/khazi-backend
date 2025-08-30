@@ -5,7 +5,7 @@ import { BcryptAdapter } from '../../../common/adapters/cryptography/bcrypt-adap
 import { AuthService, LoginParams, SignUpParams } from './auth-service';
 import { User } from '@prisma/client';
 import { JwtAdapter } from '../../../common/adapters/cryptography/jwt-adapter';
-import { UnauthorizedError } from '../../../common/errors/http-errors';
+import { UnauthorizedError } from '../../../common/factories/errors/http-errors';
 import { Hasher } from '../protocols/hasher';
 import { HashComparer } from '../protocols/hash-comparer';
 import { Encrypter } from '../protocols/encrypter';

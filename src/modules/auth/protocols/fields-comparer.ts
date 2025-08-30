@@ -1,4 +1,4 @@
-import { HttpError } from '../../../common/errors/http-errors';
+import { HttpError } from '../../../common/factories/errors/http-errors';
 
 export interface FieldComparer {
   compare(data: any): HttpError | void;

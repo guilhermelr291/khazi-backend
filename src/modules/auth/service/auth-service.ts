@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import {
   BadRequestError,
   UnauthorizedError,
-} from '../../../common/errors/http-errors';
+} from '../../../common/factories/errors/http-errors';
 import { UserRepository } from '../../user/repository/user-repository';
 
 import { Hasher } from '../protocols/hasher';

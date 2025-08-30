@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '../../../prisma/db';
 
-const PUBLIC_ROUTES = ['/api/login', '/api/signup'];
+const PUBLIC_ROUTES = [
+  '/api/auth/login',
+  '/api/auth/signup',
+  '/api/auth/callback',
+];
 
 export async function checkAuth(
   req: Request,

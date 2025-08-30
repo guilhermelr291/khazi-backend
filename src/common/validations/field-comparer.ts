@@ -1,4 +1,4 @@
-import { BadRequestError, HttpError } from '../errors/http-errors';
+import { BadRequestError, HttpError } from '../factories/errors/http-errors';
 import { FieldComparer } from '../../modules/auth/protocols/fields-comparer';
 
 export class FieldComparerValidation implements FieldComparer {

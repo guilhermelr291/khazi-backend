@@ -7,10 +7,10 @@ import { LoginSchema } from '../validations/login/login-schemas';
 const authController = makeAuthController();
 
 export default (router: Router): void => {
-  router.post('/signup', validate(SignUpSchema), (req, res, next) =>
+  router.post('/auth/signup', validate(SignUpSchema), (req, res, next) =>
     authController.signUp(req, res, next)
   );
-  router.post('/login', validate(LoginSchema), (req, res, next) =>
+  router.post('/auth/login', validate(LoginSchema), (req, res, next) =>
     authController.login(req, res, next)
   );
 };

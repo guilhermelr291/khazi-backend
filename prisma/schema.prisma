@@ -20,5 +20,17 @@ model User {
   name String
   email String @unique
   password String
+  shopId Int?
 
+  userToken UserToken?
+}
+
+model UserToken {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  accessToken  String
+  refreshToken String
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
